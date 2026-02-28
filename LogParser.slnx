@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LogParser/LogParser.csproj" Id="fa1c0d22-5696-4969-80de-04bf0af8eb94" />
+  <Project Path="LogParserTests/LogParserTests.csproj" Id="bfbd5f43-a002-46f1-a529-4798fc73a4bb" />
+</Solution>
