@@ -1,6 +1,3 @@
 ﻿namespace LogParser;
 
-public class LogLineParserResult
-{
-
-}
+public record LogLineParserResult(bool Success, string[] LogLineSections, string ErrorMessage);
