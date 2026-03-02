@@ -2,34 +2,33 @@
 
 namespace LogParser.SectionHandlers;
 
-internal class DateTimeSectionParser : ISectionParser
+internal class ComponentSectionParser : ISectionParser
 {
-    private static readonly string defaultPattern =
-    @"^\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}(?:\.\d{3,6})?(?:Z|[+-]\d{2}:\d{2})?";
+    private static readonly string componentPattern = @"^[A-Z][a-zA-Z]*";
 
     public LogLineParserResult ParseSection(string logLine, int sectionIndex)
     {
         if (string.IsNullOrEmpty(logLine))
-            return new LogLineParserResult(false, [], "Failed to parse datetime section in log line");
+            return new LogLineParserResult(false, [], "Failed to parse component section in log line");
 
         var parts = SplitLogLine(logLine);
 
         if (sectionIndex >= 0 && sectionIndex < parts.Count)
         {
             var candidate = parts[sectionIndex].Trim();
-            var match = Regex.Match(candidate, defaultPattern);
-            if (match.Success)
+            var match = Regex.Match(candidate, componentPattern);
+            if (match.Success && IsValidComponentName(match.Value))
                 return new LogLineParserResult(true, [match.Value], string.Empty);
         }
 
-        if (sectionIndex == 0)
-        {
-            var match = Regex.Match(logLine, defaultPattern);
-            if (match.Success)
-                return new LogLineParserResult(true, [match.Value], string.Empty);
-        }
+        return new LogLineParserResult(false, [], "Failed to parse component section in log line");
+    }
 
-        return new LogLineParserResult(false, [], "Failed to parse datetime section in log line");
+    private bool IsValidComponentName(string componentName)
+    {
+        return !string.IsNullOrEmpty(componentName) && 
+               char.IsUpper(componentName[0]) && 
+               componentName.All(char.IsLetter);
     }
 
     private List<string> SplitLogLine(string logLine)

@@ -9,10 +9,8 @@ internal class LogLevelSectionParser : ISectionParser
         if (string.IsNullOrEmpty(logLine))
             return new LogLineParserResult(false, [], "Failed to parse loglevel section in log line");
 
-        // Split by common delimiters
         var parts = SplitLogLine(logLine);
 
-        // If sectionIndex is within bounds, check that specific section
         if (sectionIndex >= 0 && sectionIndex < parts.Count)
         {
             var candidate = parts[sectionIndex].Trim().ToUpperInvariant();
@@ -29,7 +27,6 @@ internal class LogLevelSectionParser : ISectionParser
 
     private List<string> SplitLogLine(string logLine)
     {
-        // Split by spaces, brackets, pipes, tabs
         var parts = new List<string>();
         var current = string.Empty;
         var inBracket = false;

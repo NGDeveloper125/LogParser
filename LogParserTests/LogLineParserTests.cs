@@ -48,6 +48,7 @@ public class LogLineParserTests
     [Theory]
     [InlineData(new string[] { "DateTime" }, "2024-01-01 12:00:00 INFO This is a log line message")]
     [InlineData(new string[] { "LogLevel" }, "[INFO] This is a log line message")]
+    [InlineData(new string[] { "Component" }, "UserService - This is a log line message")]
     public void BuildLogLine_ShouldBeSuccessful_WhenLogLineFormatIsInTheExpextedFormat(string[] SectionHandlerTypes, string logLine)
     {
         List<SectionParser> sectionHandlers = new List<SectionParser>();

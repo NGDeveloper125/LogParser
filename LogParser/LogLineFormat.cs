@@ -14,8 +14,8 @@ public class LogLineFormat
             {
                 SectionParser.DateTime => new DateTimeSectionParser(),
                 SectionParser.LogLevel => new LogLevelSectionParser(),
-              //  SectionHandler.LogMessage => new LogMessageSectionHandler(),
-              //  SectionHandler.Component => new ComponentSectionHandler(),
+                SectionParser.Component => new ComponentSectionParser(),
+                //  SectionHandler.LogMessage => new LogMessageSectionHandler(),
                 _ => throw new ArgumentException($"Invalid section handler type: {sectionHandler}")
             };
             SectionHandlers.Add(handler);
