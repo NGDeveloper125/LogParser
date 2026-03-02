@@ -1,6 +1,6 @@
 ﻿namespace LogParser.SectionHandlers;
 
-public enum SectionHandler
+public enum SectionParser
 {
     DateTime,
     LogLevel,

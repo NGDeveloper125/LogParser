@@ -24,9 +24,9 @@ namespace LogParser
             int numberOfSections = logLineFormat.GetNumberOfSections();
             List<string> logLineSections = new List<string>();
             int sectionIndex = 0;   
-            foreach (ISectionHandler sectionHandler in logLineFormat.GetSectionHandlers())
+            foreach (ISectionParser sectionHandler in logLineFormat.GetSectionHandlers())
             {
-                LogLineParserResult sectionResult = sectionHandler.HandleSection(logLine, sectionIndex);
+                LogLineParserResult sectionResult = sectionHandler.ParseSection(logLine, sectionIndex);
                 if(!sectionResult.Success) return sectionResult;
                 logLineSections.Add(sectionResult.LogLineSections[0]);
             }
