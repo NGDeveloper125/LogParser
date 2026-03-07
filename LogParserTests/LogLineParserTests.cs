@@ -1,5 +1,5 @@
 ﻿using LogParser;
-using LogParser.SectionHandlers;
+using LogParser.SectionParsers;
 
 namespace LogParserTests;
 
@@ -33,7 +33,7 @@ public class LogLineParserTests
     {
         List<SectionParser> sectionHandlers = new List<SectionParser>();
         foreach (string sectionsHandlerType in SectionHandlerTypes)
-        { 
+        {
             SectionParser sectionHandler = Enum.Parse<SectionParser>(sectionsHandlerType);
             sectionHandlers.Add(sectionHandler);
         }
@@ -49,6 +49,8 @@ public class LogLineParserTests
     [InlineData(new string[] { "DateTime" }, "2024-01-01 12:00:00 INFO This is a log line message")]
     [InlineData(new string[] { "LogLevel" }, "[INFO] This is a log line message")]
     [InlineData(new string[] { "Component" }, "UserService - This is a log line message")]
+    [InlineData(new string[] { "LogMessage" }, "This is a log line message")]
+    [InlineData(new string[] { "DateTime", "LogLevel", "Component", "LogMessage" }, "This is a log line message")]
     public void BuildLogLine_ShouldBeSuccessful_WhenLogLineFormatIsInTheExpextedFormat(string[] SectionHandlerTypes, string logLine)
     {
         List<SectionParser> sectionHandlers = new List<SectionParser>();
@@ -62,5 +64,30 @@ public class LogLineParserTests
         LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine, logLineFormat);
         Assert.NotNull(logLineResult);
         Assert.True(logLineResult.Success);
+    }
+
+    [Theory]
+    [InlineData(new string[] { "DateTime", "LogLevel", "Component", "LogMessage" }, "2024-01-01 12:00:00 INFO UserService - This is a log line message", new string[] { "2024-01-01 12:00:00", "INFO", "UserService", "This is a log line message" })]
+    [InlineData(new string[] { "LogLevel", "DateTime", "Component", "LogMessage" }, "INFO 2024-01-01 12:00:00 UserService - This is a log line message", new string[] { "INFO", "2024-01-01 12:00:00", "UserService", "This is a log line message" })]
+    [InlineData(new string[] { "Component", "LogLevel", "DateTime", "LogMessage" }, "UserService - INFO 2024-01-01 12:00:00 This is a log line message", new string[] { "UserService", "INFO", "2024-01-01 12:00:00", "This is a log line message" })]
+    public void BuildLogLine_ShouldParseSectionsCorrectly_WhenLogLineFormatIsInTheExpextedFormat(string[] SectionHandlerTypes, string logLine, string[] expectedSections)
+    {
+        List<SectionParser> sectionHandlers = new List<SectionParser>();
+        foreach (string sectionsHandlerType in SectionHandlerTypes)
+        {
+            SectionParser sectionHandler = Enum.Parse<SectionParser>(sectionsHandlerType);
+            sectionHandlers.Add(sectionHandler);
+        }
+        LogLineFormat logLineFormat = new LogLineFormat(sectionHandlers);
+        LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine, logLineFormat);
+
+        Assert.NotNull(logLineResult);
+        Assert.True(logLineResult.Success);
+        Assert.Equal(expectedSections.Length, logLineResult.LogLineSections.Length);
+
+        for (int i = 0; i < expectedSections.Length; i++)
+        {
+            Assert.Equal(expectedSections[i], logLineResult.LogLineSections[i]);
+        }
     }
 }

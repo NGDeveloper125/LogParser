@@ -1,4 +1,4 @@
-﻿namespace LogParser.SectionHandlers;
+﻿namespace LogParser.SectionParsers;
 
 public enum SectionParser
 {

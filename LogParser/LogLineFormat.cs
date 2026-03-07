@@ -1,4 +1,4 @@
-﻿using LogParser.SectionHandlers;
+﻿using LogParser.SectionParsers;
 
 namespace LogParser;
 
@@ -15,7 +15,7 @@ public class LogLineFormat
                 SectionParser.DateTime => new DateTimeSectionParser(),
                 SectionParser.LogLevel => new LogLevelSectionParser(),
                 SectionParser.Component => new ComponentSectionParser(),
-                //  SectionHandler.LogMessage => new LogMessageSectionHandler(),
+                SectionParser.LogMessage => new LogMessageSectionParser(),
                 _ => throw new ArgumentException($"Invalid section handler type: {sectionHandler}")
             };
             SectionHandlers.Add(handler);
@@ -27,7 +27,7 @@ public class LogLineFormat
         return SectionHandlers.Count();
     }
 
-    public virtual List<ISectionParser> GetSectionHandlers()
+    public virtual List<ISectionParser> GetSectionParsers()
     {
         return SectionHandlers;
     }
