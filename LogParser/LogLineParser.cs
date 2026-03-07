@@ -1,4 +1,4 @@
-﻿using LogParser.SectionHandlers;
+﻿using LogParser.SectionParsers;
 
 namespace LogParser
 {
@@ -15,23 +15,34 @@ namespace LogParser
             }
             catch (Exception ex)
             {
-                return new LogLineParserResult(true, [], ex.Message);
+                return new LogLineParserResult(false, [], ex.Message);
             }
-        }
-
+        }       
+    
         private static LogLineParserResult BreakLogLineintoSections(string logLine, LogLineFormat logLineFormat)
         {
-            int numberOfSections = logLineFormat.GetNumberOfSections();
             List<string> logLineSections = new List<string>();
-            int sectionIndex = 0;   
-            foreach (ISectionHandler sectionHandler in logLineFormat.GetSectionHandlers())
+            int sectionIndex = 0;
+            bool anySuccessful = false;
+            
+            foreach (ISectionParser sectionParser in logLineFormat.GetSectionParsers())
             {
-                LogLineParserResult sectionResult = sectionHandler.HandleSection(logLine, sectionIndex);
-                if(!sectionResult.Success) return sectionResult;
-                logLineSections.Add(sectionResult.LogLineSections[0]);
+                var result = sectionParser.ParseSection(logLine, sectionIndex, logLineSections);
+                
+                if (result.Success && result.LogLineSections.Length > 0)
+                {
+                    logLineSections.Add(result.LogLineSections[0]);
+                    anySuccessful = true;
+                }
+                else
+                {
+                    logLineSections.Add(string.Empty);
+                }
+                
+                sectionIndex++;
             }
 
-            return new LogLineParserResult(true, logLineSections.ToArray(), string.Empty);
+            return new LogLineParserResult(anySuccessful, logLineSections.ToArray(), string.Empty);
         }
     }
 }

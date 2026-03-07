@@ -1,21 +1,21 @@
-﻿using LogParser.SectionHandlers;
+﻿using LogParser.SectionParsers;
 
 namespace LogParser;
 
 public class LogLineFormat
 {
-    private List<ISectionHandler> SectionHandlers = [];
+    private List<ISectionParser> SectionHandlers = [];
 
-    public LogLineFormat(List<SectionHandler> sectionHandlers)
+    public LogLineFormat(List<SectionParser> sectionHandlers)
     {
-        foreach (SectionHandler sectionHandler in sectionHandlers)
+        foreach (SectionParser sectionHandler in sectionHandlers)
         {
-            ISectionHandler handler = sectionHandler switch
+            ISectionParser handler = sectionHandler switch
             {
-                SectionHandler.DateTime => new DateTimeSectionHandler(),
-              //  SectionHandler.LogLevel => new LogLevelSectionHandler(),
-              //  SectionHandler.LogMessage => new LogMessageSectionHandler(),
-              //  SectionHandler.Component => new ComponentSectionHandler(),
+                SectionParser.DateTime => new DateTimeSectionParser(),
+                SectionParser.LogLevel => new LogLevelSectionParser(),
+                SectionParser.Component => new ComponentSectionParser(),
+                SectionParser.LogMessage => new LogMessageSectionParser(),
                 _ => throw new ArgumentException($"Invalid section handler type: {sectionHandler}")
             };
             SectionHandlers.Add(handler);
@@ -27,7 +27,7 @@ public class LogLineFormat
         return SectionHandlers.Count();
     }
 
-    public virtual List<ISectionHandler> GetSectionHandlers()
+    public virtual List<ISectionParser> GetSectionParsers()
     {
         return SectionHandlers;
     }
