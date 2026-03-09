@@ -29,15 +29,15 @@ public class LogLineParserTests
 
     [Theory]
     [InlineData(new string[] { "DateTime" }, "This is a log line message")]
-    public void BuildLogLine_ShouldBeUnsuccessful_WhenLogLineFormatIsNotInTheExpextedFormat(string[] SectionHandlerTypes, string logLine)
+    public void BuildLogLine_ShouldBeUnsuccessful_WhenLogLineFormatIsNotInTheExpextedFormat(string[] SectionParserTypes, string logLine)
     {
-        List<SectionParser> sectionHandlers = new List<SectionParser>();
-        foreach (string sectionsHandlerType in SectionHandlerTypes)
+        List<SectionParser> sectionParsers = new List<SectionParser>();
+        foreach (string sectionsParserType in SectionParserTypes)
         {
-            SectionParser sectionHandler = Enum.Parse<SectionParser>(sectionsHandlerType);
-            sectionHandlers.Add(sectionHandler);
+            SectionParser sectionParser = Enum.Parse<SectionParser>(sectionsParserType);
+            sectionParsers.Add(sectionParser);
         }
-        LogLineFormat logLineFormat = new LogLineFormat(sectionHandlers);
+        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers);
 
         LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine, logLineFormat);
 
@@ -51,16 +51,16 @@ public class LogLineParserTests
     [InlineData(new string[] { "Component" }, "UserService - This is a log line message")]
     [InlineData(new string[] { "LogMessage" }, "This is a log line message")]
     [InlineData(new string[] { "DateTime", "LogLevel", "Component", "LogMessage" }, "This is a log line message")]
-    public void BuildLogLine_ShouldBeSuccessful_WhenLogLineFormatIsInTheExpextedFormat(string[] SectionHandlerTypes, string logLine)
+    public void BuildLogLine_ShouldBeSuccessful_WhenLogLineFormatIsInTheExpextedFormat(string[] SectionParserTypes, string logLine)
     {
-        List<SectionParser> sectionHandlers = new List<SectionParser>();
-        foreach (string sectionsHandlerType in SectionHandlerTypes)
+        List<SectionParser> sectionParsers = new List<SectionParser>();
+        foreach (string sectionsParserType in SectionParserTypes)
         {
-            SectionParser sectionHandler = Enum.Parse<SectionParser>(sectionsHandlerType);
-            sectionHandlers.Add(sectionHandler);
+            SectionParser sectionParser = Enum.Parse<SectionParser>(sectionsParserType);
+            sectionParsers.Add(sectionParser);
         }
 
-        LogLineFormat logLineFormat = new LogLineFormat(sectionHandlers);
+        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers);
         LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine, logLineFormat);
         Assert.NotNull(logLineResult);
         Assert.True(logLineResult.Success);
@@ -70,15 +70,15 @@ public class LogLineParserTests
     [InlineData(new string[] { "DateTime", "LogLevel", "Component", "LogMessage" }, "2024-01-01 12:00:00 INFO UserService - This is a log line message", new string[] { "2024-01-01 12:00:00", "INFO", "UserService", "This is a log line message" })]
     [InlineData(new string[] { "LogLevel", "DateTime", "Component", "LogMessage" }, "INFO 2024-01-01 12:00:00 UserService - This is a log line message", new string[] { "INFO", "2024-01-01 12:00:00", "UserService", "This is a log line message" })]
     [InlineData(new string[] { "Component", "LogLevel", "DateTime", "LogMessage" }, "UserService - INFO 2024-01-01 12:00:00 This is a log line message", new string[] { "UserService", "INFO", "2024-01-01 12:00:00", "This is a log line message" })]
-    public void BuildLogLine_ShouldParseSectionsCorrectly_WhenLogLineFormatIsInTheExpextedFormat(string[] SectionHandlerTypes, string logLine, string[] expectedSections)
+    public void BuildLogLine_ShouldParseSectionsCorrectly_WhenLogLineFormatIsInTheExpextedFormat(string[] SectionParserTypes, string logLine, string[] expectedSections)
     {
-        List<SectionParser> sectionHandlers = new List<SectionParser>();
-        foreach (string sectionsHandlerType in SectionHandlerTypes)
+        List<SectionParser> sectionParsers = new List<SectionParser>();
+        foreach (string sectionsParserType in SectionParserTypes)
         {
-            SectionParser sectionHandler = Enum.Parse<SectionParser>(sectionsHandlerType);
-            sectionHandlers.Add(sectionHandler);
+            SectionParser sectionParser = Enum.Parse<SectionParser>(sectionsParserType);
+            sectionParsers.Add(sectionParser);
         }
-        LogLineFormat logLineFormat = new LogLineFormat(sectionHandlers);
+        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers);
         LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine, logLineFormat);
 
         Assert.NotNull(logLineResult);
