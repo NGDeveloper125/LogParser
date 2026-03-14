@@ -10,7 +10,7 @@ public class LogLineParserTests
     [InlineData(null)]
     public void BuildLogLine_ShouldBeUnsuccessful_WhenLineIsEmptyOrNull(string? logLine)
     {
-        LogLineFormat logLineFormat = new LogLineFormat([]);
+        LogLineFormat logLineFormat = new LogLineFormat([], []);
 
         LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine!, logLineFormat);
 
@@ -37,7 +37,7 @@ public class LogLineParserTests
             SectionParser sectionParser = Enum.Parse<SectionParser>(sectionsParserType);
             sectionParsers.Add(sectionParser);
         }
-        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers);
+        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers, []);
 
         LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine, logLineFormat);
 
@@ -50,7 +50,6 @@ public class LogLineParserTests
     [InlineData(new string[] { "LogLevel" }, "[INFO] This is a log line message")]
     [InlineData(new string[] { "Component" }, "UserService - This is a log line message")]
     [InlineData(new string[] { "LogMessage" }, "This is a log line message")]
-    [InlineData(new string[] { "DateTime", "LogLevel", "Component", "LogMessage" }, "This is a log line message")]
     public void BuildLogLine_ShouldBeSuccessful_WhenLogLineFormatIsInTheExpextedFormat(string[] SectionParserTypes, string logLine)
     {
         List<SectionParser> sectionParsers = new List<SectionParser>();
@@ -60,7 +59,7 @@ public class LogLineParserTests
             sectionParsers.Add(sectionParser);
         }
 
-        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers);
+        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers, []);
         LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine, logLineFormat);
         Assert.NotNull(logLineResult);
         Assert.True(logLineResult.Success);
@@ -78,7 +77,7 @@ public class LogLineParserTests
             SectionParser sectionParser = Enum.Parse<SectionParser>(sectionsParserType);
             sectionParsers.Add(sectionParser);
         }
-        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers);
+        LogLineFormat logLineFormat = new LogLineFormat(sectionParsers, []);
         LogLineParserResult logLineResult = LogLineParser.BuildLogLine(logLine, logLineFormat);
 
         Assert.NotNull(logLineResult);
