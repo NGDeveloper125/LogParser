@@ -23,26 +23,31 @@ namespace LogParser
         {
             List<string> logLineSections = new List<string>();
             int sectionIndex = 0;
-            bool anySuccessful = false;
-            
+            bool allSucceeded = true;
+            string errorMessage = string.Empty;
+
             foreach (ISectionParser sectionParser in logLineFormat.GetSectionParsers())
             {
                 var result = sectionParser.ParseSection(logLine, sectionIndex, logLineSections);
-                
+
                 if (result.Success && result.LogLineSections.Length > 0)
                 {
-                    logLineSections.Add(result.LogLineSections[0]);
-                    anySuccessful = true;
+                    logLineSections.AddRange(result.LogLineSections);
                 }
                 else
                 {
                     logLineSections.Add(string.Empty);
+                    allSucceeded = false;
+                    if (string.IsNullOrEmpty(errorMessage))
+                    {
+                        errorMessage = result.ErrorMessage;
+                    }
                 }
-                
+
                 sectionIndex++;
             }
 
-            return new LogLineParserResult(anySuccessful, logLineSections.ToArray(), string.Empty);
+            return new LogLineParserResult(allSucceeded, logLineSections.ToArray(), errorMessage);
         }
     }
 }
