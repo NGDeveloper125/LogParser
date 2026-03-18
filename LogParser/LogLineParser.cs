@@ -23,7 +23,7 @@ namespace LogParser
         {
             List<string> logLineSections = new List<string>();
             int sectionIndex = 0;
-            bool allSucceeded = true;
+            bool allSuccessful = true;
             string errorMessage = string.Empty;
 
             foreach (ISectionParser sectionParser in logLineFormat.GetSectionParsers())
@@ -37,7 +37,7 @@ namespace LogParser
                 else
                 {
                     logLineSections.Add(string.Empty);
-                    allSucceeded = false;
+                    allSuccessful = false;
                     if (string.IsNullOrEmpty(errorMessage))
                     {
                         errorMessage = result.ErrorMessage;
@@ -47,7 +47,7 @@ namespace LogParser
                 sectionIndex++;
             }
 
-            return new LogLineParserResult(allSucceeded, logLineSections.ToArray(), errorMessage);
+            return new LogLineParserResult(allSuccessful, logLineSections.ToArray(), errorMessage);
         }
     }
 }
