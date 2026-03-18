@@ -12,10 +12,9 @@ internal class LogLevelSectionParser : ISectionParser
             return new LogLineParserResult(false, [], "Failed to parse loglevel section in log line");
 
         var workingLine = RemoveParsedSections(logLine, parsedSections);
-
-        var pattern = @"^\s*[\-\|\s]*[\[\(]?(" + string.Join("|", defaultLevels) + @")[\]\)]?\s*";
+        var pattern = @"^\s*(?:\[[^\]]*\])?\s*[\-\|\s]*[\[\(]?(" + string.Join("|", defaultLevels) + @")[\]\)]?\s*";
         var match = Regex.Match(workingLine, pattern, RegexOptions.IgnoreCase);
-        
+
         if (match.Success)
         {
             var level = match.Groups[1].Value.ToUpperInvariant();
